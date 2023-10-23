@@ -1,0 +1,69 @@
+name: dgbuildenv
+channels:
+  - nodefaults
+  - conda-forge
+dependencies:
+#  - mamba
+  - python
+  - compilers
+  - cmake
+  - bash
+  - pybind11
+  - numpy #Since somewhat (?) tied to pybind11?
+
+# Developer tools:
+#  - git
+#  - gdb
+#  - valgrind
+
+# For g4framework (includes openscenegraph to test G4OSG compilation):
+  - matplotlib-base
+  - zlib
+  - geant4
+  - expat
+  - ncrystal
+  - scipy # imported in PyAna
+  - openscenegraph # for G4OSG compilation check.
+  - hdf5 #Only for NMX+ACE, could be removed
+#TODO: - mcpl
+
+#NCrystal material generation only:
+#  - ase
+#  - pymatgen
+#  - gemmi
+#  - spglib
+#  - pip
+
+#Only temporarily needed:
+variables:
+  DGCODE_BOOTSTRAP_SKIP_DGDEPFIXER_CHECK: 1
+  DGCODE_USESYSNCRYSTAL: ALWAYS
+
+#TODO: Cleanup the stuff below:
+
+#  - pip:
+#    - ptpython==3.0.23
+#  DGCODE_FORCEVAR_CC: clang
+#  DGCODE_FORCEVAR_CXX: clang++
+#  URL_DGCODE: git@github.com:mctools/dgcode.git
+#  URL_DGCODE_VAL: git@github.com:mctools/dgcode_val.git
+#  URL_DGCODE_DG_PROJECTS: git@github.com:ess-dg/dgcode_projects.git
+#  URL_DGCODE_DG_PRIVATE_PROJECTS: git@github.com:mctools/dgcode_private_projects.git
+##
+##name: dgcode
+##channels:
+##  - nodefaults
+##  - conda-forge
+##dependencies:
+##  - python
+##  - cmake
+##  - compilers
+##  - geant4
+##  - expat
+##variables:
+##  - DGCODE_BOOTSTRAP_SKIP_DGDEPFIXER_CHECK: 1
+##
+
+#ase pymatgen matplotlib gemmi spglib numpy scipy
+#
+#unsolved: root, garfield, mantidpython
