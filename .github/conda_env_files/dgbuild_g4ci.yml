@@ -10,6 +10,7 @@ dependencies:
   - bash
   - pybind11
   - numpy #Since somewhat (?) tied to pybind11?
+  - tomli #not actually needed for py3.11+
 
 # Developer tools:
 #  - git
