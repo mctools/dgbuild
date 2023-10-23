@@ -1,0 +1,6 @@
+[console_scripts]
+dgbuild2 = ess_dgbuild_internals._cli_dgbuild:main
+dgenv2 = ess_dgbuild_internals._cli_dgbuild:dgenv_main
+dgrun2 = ess_dgbuild_internals._cli_dgbuild:dgrun_main
+dgtests2 = ess_dgbuild_internals._cli_dgtests:main
+unwrapped_dgbuild2 = ess_dgbuild_internals._cli_dgbuild:unwrapped_main

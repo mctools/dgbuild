@@ -1,0 +1,15 @@
+Metadata-Version: 2.1
+Name: ess-dgbuild
+Version: 0.0.1
+Summary: Build system for the ESS-detector group coding framework
+Author-email: Thomas Kittelmann <thomas.kittelmann@ess.eu>
+Project-URL: Homepage, https://github.com/mctools/dgcode
+Project-URL: Bug Tracker, https://github.com/mctools/dgcode/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: Unix
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+Build system for the ESS-detector group coding framework.

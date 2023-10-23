@@ -1,0 +1,30 @@
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ess_dgbuild"
+version = "0.0.1"
+authors = [
+  { name="Thomas Kittelmann", email="thomas.kittelmann@ess.eu" },
+]
+description = "Build system for the ESS-detector group coding framework"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: Unix",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/mctools/dgcode"
+"Bug Tracker" = "https://github.com/mctools/dgcode/issues"
+
+[project.scripts]
+dgbuild2 = "ess_dgbuild_internals._cli_dgbuild:main"
+unwrapped_dgbuild2 = "ess_dgbuild_internals._cli_dgbuild:unwrapped_main"
+dgtests2 = "ess_dgbuild_internals._cli_dgtests:main"
+dgenv2 = "ess_dgbuild_internals._cli_dgbuild:dgenv_main"
+dgrun2 = "ess_dgbuild_internals._cli_dgbuild:dgrun_main"
