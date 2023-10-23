@@ -8,40 +8,40 @@ def _query(n, *, boolean=False):
         return (_ or '').lower() in ['true', 'on', 'yes', '1']
     return _
 
-class EnvCfgClassic:
-    #Important note: The code USING these variables might emit error messages
-    #mentioning the name of the environment variables. Thus, any changes here
-    #should be reflected in the code using them as well.
-
-    legacy_mode = True
-
-    #These are the basic ones:
-    import pathlib
-    build_dir_resolved = pathlib.Path(_query('DGCODE_BUILD_DIR_RESOLVED')).resolve().absolute()
-    install_dir_resolved = pathlib.Path(_query('DGCODE_INSTALL_DIR_RESOLVED')).resolve().absolute()
-    projects_dir = pathlib.Path(_query('DGCODE_PROJECTS_DIR')).resolve().absolute()
-    extra_pkg_path = _query('DGCODE_EXTRA_PKG_PATH')
-    enable_projects_pkg_selection_flag = _query('DGCODE_ENABLE_PROJECTS_PKG_SELECTION_FLAG',boolean=True)
-
-    #These are used in the context of conda installs:
-    conda_prefix =  _query('CONDA_PREFIX')
-    cmake_args =  _query('CMAKE_ARGS')
-
-    #These are most likely almost never used by anyone:
-    color_fix_code = _query('DGCODE_COLOR_FIX')
-    allow_sys_dev =  _query('DGCODE_ALLOWSYSDEV',boolean=True)
-
-    # NOTE: backend.py also checks environment variables to check if something
-    # changed needing an automatic cmake reconf. We provide a good base list
-    # here:
-    reconf_env_vars = [
-        #First all of the above except DGCODE_ALLOWSYSDEV:
-        'DGCODE_PROJECTS_DIR', 'DGCODE_INSTALL_DIR_RESOLVED','DGCODE_BUILD_DIR_RESOLVED',
-        'DGCODE_EXTRA_PKG_PATH', 'DGCODE_ENABLE_PROJECTS_PKG_SELECTION_FLAG','DGCODE_COLOR_FIX',
-        'CONDA_PREFIX','CMAKE_ARGS',
-    ]
-
-    env_paths = {}
+#class EnvCfgClassic:
+#    #Important note: The code USING these variables might emit error messages
+#    #mentioning the name of the environment variables. Thus, any changes here
+#    #should be reflected in the code using them as well.
+#
+#    legacy_mode = True
+#
+#    #These are the basic ones:
+#    import pathlib
+#    build_dir_resolved = pathlib.Path(_query('DGCODE_BUILD_DIR_RESOLVED')).resolve().absolute()
+#    install_dir_resolved = pathlib.Path(_query('DGCODE_INSTALL_DIR_RESOLVED')).resolve().absolute()
+#    projects_dir = pathlib.Path(_query('DGCODE_PROJECTS_DIR')).resolve().absolute()
+#    extra_pkg_path = _query('DGCODE_EXTRA_PKG_PATH')
+#    enable_projects_pkg_selection_flag = _query('DGCODE_ENABLE_PROJECTS_PKG_SELECTION_FLAG',boolean=True)
+#
+#    #These are used in the context of conda installs:
+#    conda_prefix =  _query('CONDA_PREFIX')
+#    cmake_args =  _query('CMAKE_ARGS')
+#
+#    #These are most likely almost never used by anyone:
+#    color_fix_code = _query('DGCODE_COLOR_FIX')
+#    allow_sys_dev =  _query('DGCODE_ALLOWSYSDEV',boolean=True)
+#
+#    # NOTE: backend.py also checks environment variables to check if something
+#    # changed needing an automatic cmake reconf. We provide a good base list
+#    # here:
+#    reconf_env_vars = [
+#        #First all of the above except DGCODE_ALLOWSYSDEV:
+#        'DGCODE_PROJECTS_DIR', 'DGCODE_INSTALL_DIR_RESOLVED','DGCODE_BUILD_DIR_RESOLVED',
+#        'DGCODE_EXTRA_PKG_PATH', 'DGCODE_ENABLE_PROJECTS_PKG_SELECTION_FLAG','DGCODE_COLOR_FIX',
+#        'CONDA_PREFIX','CMAKE_ARGS',
+#    ]
+#
+env_paths = {}
 
 def _newcfg():
     from .cfgbuilder import locate_master_cfg_file, CfgBuilder
