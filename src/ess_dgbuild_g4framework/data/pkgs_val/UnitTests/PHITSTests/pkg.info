@@ -1,0 +1,7 @@
+package(USEPKG PHITS)
+
+#############################################################
+
+PHITS utilities tests.
+
+primary author: thomas.kittelmann@ess.eu

@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+
+import G4StdGeometries.GeoSlab as Geo
+geo=Geo.create()
+geo.material="G4_Al"
+geo.target_depth_cm=2000
+
+import G4Units.Units as Units
+import G4CustomPyGen
+
+class FunnyGen(G4CustomPyGen.GenBase):
+    def init_generator(self,gun):
+        gun.set_direction(0,0,1)
+
+    def generate_event(self,gun):
+        gun.set_energy(100*Units.MeV)
+        gun.set_type('proton')
+        gun.set_position(0,0,0)
+        gun.fire()
+        gun.set_type('e-')
+        gun.set_position(2*Units.mm,20*Units.mm,0)
+        gun.fire()
+        gun.set_energy(50*Units.MeV)
+        gun.set_type('proton')
+        gun.set_position(-30*Units.mm,10*Units.mm,0)
+        gun.fire()
+
+gen = FunnyGen()
+
+from G4HeatMap import HeatMapWriter
+import G4Units.Units as U
+
+hm = HeatMapWriter("targetdepmap.mesh3d",
+                   200,-50.0*U.mm,50*U.mm,#x
+                   200,-50.0*U.mm,50*U.mm,#y
+                   200,-10.0*U.mm,50*U.mm)#z
+hm.setQuantity("step.edep")
+hm.setComments("Separate 100MeV proton, electron and gamma beams.")
+
+import G4Launcher
+g4 = G4Launcher(geo,gen)
+g4.addPostInitHook(hm.inithook)
+g4.setOutput("none")
+g4.go()
+
+

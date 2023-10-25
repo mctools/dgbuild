@@ -1,0 +1,7 @@
+package(USEPKG MCPL MCPLTestsFMT2 Utils)
+
+##########################################################
+
+MCPL Tests and examples.
+
+Primary author: thomas.kittelmann@ess.eu

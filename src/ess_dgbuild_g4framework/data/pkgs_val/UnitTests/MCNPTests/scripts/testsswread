@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+for f in test_ssw.w pi_mins.w.gz pi_minus_v2.w.gz ssw_anti_proton.gz wssx.gz wssy.gz mcnpx_v250.w.gz mcnpx_v260.w.gz mcnp5_gamma.w.gz mcnp5_neutron.w.gz mcnp6_ysyeom_ghissue45.w.gz; do
+    echo
+    echo "============= Inspecting $f ============="
+    echo
+    ess_mcnp_sswinspect $ESS_DATA_DIR/MCNPTests/$f >& tmpout.txt
+    EC=${PIPESTATUS[0]}
+    if [ $EC != 0 ]; then
+        echo "ERROR!"
+        exit 1
+    fi
+    uniq -c tmpout.txt tmpout2.txt
+    head -120 tmpout2.txt
+done
+
+#check various flavours and versions, including files where the kods and vers
+#fields contain non-standard data.
+for mcnpflav in mcnpx mcnp6 mcnp5; do
+    for st in "" _fakekods _fakevers; do
+        f=Write_mcpl_example_${mcnpflav}_out${st}.w.gz
+        echo
+        echo "============= Inspecting $f ============="
+        echo
+        ess_mcnp_sswinspect $ESS_DATA_DIR/MCNPTests/$f >& tmpout.txt
+        EC=${PIPESTATUS[0]}
+        head -30 tmpout.txt
+        if [ $EC != 0 ]; then
+            echo "===> Command resulted in ERROR!"
+        fi
+    done
+done
+
+#Monitor changes in help message as well
+echo "============= noargs ================="
+ess_mcnp_sswinspect
+if [ $? != 0 ]; then
+    echo "===> Command resulted in ERROR!"
+fi
+echo "============= -h ================="
+ess_mcnp_sswinspect --help
+if [ $? != 0 ]; then
+    echo "===> Command resulted in ERROR!"
+fi
+echo "============= --help ================="
+ess_mcnp_sswinspect --help
+if [ $? != 0 ]; then
+    echo "===> Command resulted in ERROR!"
+fi
+
+exit 0

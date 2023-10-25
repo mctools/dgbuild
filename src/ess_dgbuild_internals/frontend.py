@@ -45,13 +45,12 @@ def dgbuild_main( argv = None, prevent_env_setup_msg = False ):
     def get_dgcode_invoke_dirs():
         #FIXME: This is nonsensical now, we can only be in the projdir (and envcfg will complain if there are issues)!
         from . import dirs
-        return [dirs.fmwkdir.parent.parent, dirs.projdir, *dirs.extrapkgpath]
+        return [dirs.projdir, *dirs.extrapkgpath]
 
     if legacy_mode and not any([os.path.realpath(os.getcwd()).startswith(str(d)) for d in get_dgcode_invoke_dirs()]):
         from . import dirs
         from . import utils
         utils.err(['This instance of %s is associated with'%progname,'',
-                   '      Framework directory : %s'%dirs.fmwkdir.parent.parent,
                    '      Projects directory  : %s'%dirs.projdir,
                  *['      Extra package path  : %s'%str(d) for d in dirs.extrapkgpath[0:1]],
                  *['                            %s'%str(d) for d in dirs.extrapkgpath[1:]],'',
@@ -723,7 +722,6 @@ def dgbuild_main( argv = None, prevent_env_setup_msg = False ):
                 if cp.is_dir() and utils.path_is_relative_to( pabs, cp ):
                     return os.path.join('${CONDA_PREFIX}',str(pabs.relative_to(cp)))
             return str(p)
-        print (prefix+'  Framework directory              : %s'%fixpath(dirs.fmwkdir))
         print (prefix+'  Projects directory               : %s'%fixpath(dirs.projdir))
         print (prefix+'  Installation directory           : %s'%fixpath(dirs.installdir))
         print (prefix+'  Build directory                  : %s'%fixpath(dirs.blddir))
@@ -828,10 +826,10 @@ def dgbuild_main( argv = None, prevent_env_setup_msg = False ):
         print (prefix+'  %s : %s'%(pkgtxt_en.ljust(32+(len(col_end)+len(col_ok) if n_enabled else 0)),formatlist(pkg_enabled,col_ok)))
         print (prefix+'  %s : %s'%(pkgtxt_dis.ljust(32+(len(col_end)+len(col_bad) if n_disabled else 0)),formatlist(pkg_disabled,col_bad)))
         print (prefix)
-        if cp['unused_vars']:
+        if unused_vars_withvals:
             print (prefix+'%sWARNING%s Unused user cfg variables  : %s'%(col_bad,col_end,formatlist(unused_vars_withvals,None)))
             print (prefix)
-        if cp['other_warnings']:
+        if cp['other_warnings'] or ( len(cp['unused_vars'])>len(unused_vars_withvals)):
             print (prefix+'%sWARNING%s unspecified warnings from CMake encountered during environment inspection!'%(col_bad,col_end))
             print (prefix)
 

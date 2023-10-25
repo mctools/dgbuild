@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -e
+set -u
+ess_mcnp_ssw2mcpl $ESS_DATA_DIR/MCNPTests/test_ssw.w -s test.mcpl && ess_mcpl_tool -l0 test.mcpl.gz
+
+for f in 27057_27060_55173.w.gz 27057_27060_55173_isotrop.w.gz 27057_27060_55173_k_b_he3_alpha_iso.w.gz sample_ssw_mcnp6d2.w.gz mcnp6_ysyeom_ghissue45.w.gz; do
+    ess_mcnp_ssw2mcpl $ESS_DATA_DIR/MCNPTests/$f -s test.mcpl && ess_mcpl_tool -l100 test.mcpl.gz
+done
+
+echo "---> Test no args"
+ess_mcnp_ssw2mcpl || echo "---> Non-zero ExitCode detected!"
+
+echo "---> Test -h"
+ess_mcnp_ssw2mcpl -h
+
+echo "---> Test --help"
+ess_mcnp_ssw2mcpl --help

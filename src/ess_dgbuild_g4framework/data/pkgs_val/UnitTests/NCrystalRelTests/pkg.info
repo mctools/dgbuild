@@ -1,0 +1,7 @@
+package(USEPKG G4XSectDump G4Materials G4StdGenerators XSectParse PyAna USEEXT Numpy)
+
+##########################################################
+
+Simple test that Framework/External/NCrystal imported from github works correctly.
+
+Primary author: thomas.kittelmann@ess.eu

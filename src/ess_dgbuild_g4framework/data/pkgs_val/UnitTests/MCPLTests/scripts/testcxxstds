@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+ess_mcpltests_stdcmp cxx

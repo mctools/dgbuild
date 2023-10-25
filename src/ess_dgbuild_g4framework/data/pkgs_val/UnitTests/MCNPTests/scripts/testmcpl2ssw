@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -e
+set -u
+
+#Some files (not all, to keep reference log file size down):
+
+S=27057_27060_55173_isotrop.w.gz
+S="$S 27057_27060_55173_k_b_he3_alpha_iso.w.gz"
+S="$S pi_minus_v2.w.gz"
+S="$S Write_mcpl_example_mcnp6_out_fakekods.w.gz"
+S="$S Write_mcpl_example_mcnp6_out.w.gz"
+S="$S Write_mcpl_example_mcnpx_out_fakevers.w.gz"
+S="$S Write_mcpl_example_mcnpx_out.w.gz"
+S="$S mcnp5_neutron.w.gz"
+
+for bf1 in $S test_ssw.w; do
+    for bf2 in $S; do
+        f1="$ESS_DATA_DIR/MCNPTests/$bf1"
+        f2="$ESS_DATA_DIR/MCNPTests/$bf2"
+        #f1 is data file, f2 is ref file for back conversion
+        echo "=====> Testing $bf1 to mcpl (with max info):"
+        rm -f m.mcpl new.w
+        ess_mcnp_ssw2mcpl -n -d -s $f1 m.mcpl
+        ess_mcpl_tool m.mcpl
+        echo "=====> Testing conversion to ssw format of $bf2 (first 10 particles)"
+        ess_mcnp_mcpl2ssw -l10 m.mcpl $f2 new.w || echo fail
+    done
+done
+
+echo "=====> Test no args"
+ess_mcnp_mcpl2ssw || echo "=====> Non-zero ExitCode detected!"
+
+echo "=====> Test -h"
+ess_mcnp_mcpl2ssw -h
+
+echo "=====> Test --help"
+ess_mcnp_mcpl2ssw --help

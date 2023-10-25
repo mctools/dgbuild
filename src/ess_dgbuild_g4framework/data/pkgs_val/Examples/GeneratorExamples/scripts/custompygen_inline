@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+
+from __future__ import print_function
+import G4CustomPyGen
+import G4Units.Units as Units
+
+class MyPyGen(G4CustomPyGen.GenBase):
+
+    def declare_parameters(self):
+        self.addParameterDouble("energy_MeV",1.0)
+        self.addParameterDouble("extent_mm",2.0)
+        self.addParameterString("particle_name","neutron")
+
+    def validate_parameters(self):
+        if 0.05<self.energy_MeV<0.1:
+            print("ERROR: energy_MeV par between 0.05MeV and 0.1MeV is not supported!")
+            return False
+        return True
+
+    def init_generator(self,gun):
+        gun.set_type(self.particle_name)
+        gun.set_direction(0,0,1)
+
+    def generate_event(self,gun):
+        gun.set_energy(max(0,self.randGauss(1*Units.eV,self.energy_MeV*Units.MeV)))
+        y=self.rand(-1.0,1.0)*self.extent_mm*Units.mm
+        gun.set_position( 0, y, 0)
+
+gen=MyPyGen()
+
+import G4StdGeometries.GeoSlab as geomodule
+geo = geomodule.create()
+
+import G4Launcher
+launcher = G4Launcher(geo,gen)
+launcher.go()

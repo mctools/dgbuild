@@ -340,7 +340,8 @@ def perform_configuration(cmakeargs=[],
     db.save_to_file()
 
 
-    dir_names = ('fmwkdir','projdir','pkgsearchpath','blddir','installdir','testdir','envcache')
+#NOCOMMIT: check usage of dgbuild.dirs.fmwkdir everywhere
+    dir_names = ('projdir','pkgsearchpath','blddir','installdir','testdir','envcache')
     dirdict = dict(((d, getattr(dirs, d)) for d in dir_names))
 
     #Update dynamic python module with information, if needed:

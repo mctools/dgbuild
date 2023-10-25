@@ -1,2 +1,1 @@
-# dgbuild
-WORK IN PROGRESS - NOT READY FOR GENERAL USAGE
+Build system for the ESS-detector group coding framework.

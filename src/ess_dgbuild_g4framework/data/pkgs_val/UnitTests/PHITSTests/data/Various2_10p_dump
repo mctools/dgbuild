@@ -1,0 +1,48 @@
+[ T - C r o s s ]
+    title = [t-cross] in region mesh
+     mesh =  reg            # mesh type is region-wise
+      reg =    1            # number of crossing regions
+      non     r-from  r-to     area
+      1       1       2        1.000000    
+     unit =    1            # unit is [1/cm^2/source]
+     axis =  reg            # axis of output
+     file = dump            # file name of dumped data summary
+#    file = dump_dmp        # file name of dumped data
+   output = o-curr          # surface crossing omni current
+     part =  all      
+# kf/name :  0        
+     dump =   10            # (D=0) number of dumped data, <0: ascii, >0: binary
+                1   2   3   4   5   6   7   8   9  10
+# dump data    kf   x   y   z   u   v   w   e  wt  tm
+#    used :        main (  %)        temp (  %)       total (  %)
+#  memory :          15 (  0)           0 (  0)          15 (  0)
+
+#------------------------------------------------------------------------------
+#newpage:
+#   no. =  1
+
+x: Serial Num. of Region
+y:  O-Curr [1/cm^2/source]                 
+p: xlin ylog afac(0.8) form(0.9)
+h: x       n            y(all     ),l3   n   
+#  num     area         all         r.err 
+     1     1.0000E+00   6.4284E+01  0.3044
+
+#   sum    1.0000E+00   6.4284E+01
+
+'no. =  1'
+msuc: {\huge [t-cross] in region mesh}
+msdr: {\it plotted by \ANGEL \version}
+msdl: {\it calculated by \PHITS  3.10}
+wt: s(0.7)
+\vspace{-3}
+  region surface crossing
+e:
+
+# Information for Restart Calculation
+# This calculation was newly started
+# istdev =  2 # 1:Batch variance, 2:History variance
+# resc2  = 1.00000000000000000E+01 # Total source weight or Total source weight / maxcas
+# resc3  = 1.00000000000000000E+01 # Total history number or Total batch number
+# maxcas =           1 # History / Batch, only used for istdev=1
+# rijklst= 148844717761569.0 # Next initial random number

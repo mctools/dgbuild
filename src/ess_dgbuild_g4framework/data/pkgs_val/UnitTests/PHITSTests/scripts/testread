@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -e
+set -u
+
+VARIOUS=$(python3 -c 'import pathlib,os;print(" ".join(sorted(p.name for p in pathlib.Path(os.environ["ESS_DATA_DIR"]).glob("PHITSTests/*_dump_dmp.gz"))))')
+ALL="dump_dmp dump_dmp.gz empty_file empty_file.gz $VARIOUS"
+
+for f in $ALL; do
+    echo
+    echo "-----------------------------------------------------------------------------------------------"
+    echo "Trying to read PHITS file $f"
+    ess_phits_phitsinspect $ESS_DATA_DIR/PHITSTests/$f
+    echo "-----------------------------------------------------------------------------------------------"
+    echo
+done
+
+#Convert back and forth a few times and dump statistics:
+
+for f in $ALL; do
+    echo
+    echo "-----------------------------------------------------------------------------------------------"
+    echo "Trying to convert PHITS file $f to $f.mcpl"
+    ess_phits_phits2mcpl $ESS_DATA_DIR/PHITSTests/$f $f.mcpl
+    echo "-----------------------------------------------------------------------------------------------"
+    echo "Dumping result:"
+    #NB: The |sed 's#0e+#e+#' part is to make output exactly reproducible on osx:
+    ess_mcpl_tool $f.mcpl.gz|sed 's#0e+#e+#'
+    if [[ $(basename $f) = *empty* ]]; then
+        echo "Wont extract statistics for empty file..."
+    else
+        ess_mcpl_pytool --stats $f.mcpl.gz
+    fi
+    echo "Convert mcpl->phits->mcpl again and show stats:"
+    ess_phits_mcpl2phits $f.mcpl.gz $f.convphits
+    ess_phits_phits2mcpl $f.convphits $f.v2.mcpl
+    if [[ $(basename $f) = *empty* ]]; then
+        echo "Wont extract statistics for empty file..."
+    else
+        ess_mcpl_pytool --stats $f.v2.mcpl.gz
+    fi
+    echo "-----------------------------------------------------------------------------------------------"
+    echo
+done

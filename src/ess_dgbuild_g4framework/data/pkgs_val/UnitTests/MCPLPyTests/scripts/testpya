@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -e
+set -u
+MCPLFILE=$ESS_DATA_DIR/MCPLTests/reffile_1.mcpl
+MCPLFILE2=$ESS_DATA_DIR/MCPLTests/reffile_12.mcpl
+python -c 'import MCPL'
+ess_mcpl_pytool -h
+ess_mcpl_pytool -v
+ess_mcpl_pytool $MCPLFILE
+ess_mcpl_pytool -n -s3 -l5 $MCPLFILE
+ess_mcpl_pytool -j $MCPLFILE
+cp $MCPLFILE example.mcpl
+gzip example.mcpl
+ess_mcpl_pytool example.mcpl.gz
+ess_mcpl_pytool $MCPLFILE2
+ess_mcpl_pytool $MCPLFILE2 -bBlaData; echo
+ess_mcpl_pytool $MCPLFILE2 --stats
+#DISABLED FOR NOW, due to python3 -bb error triggered in backend_pdf.py method.
+#ess_mcpl_pytool $MCPLFILE2 --stats --pdf
+

@@ -1,0 +1,31 @@
+Example to write mcpl from mcnp5,mcnp6 and mcnpx
+C CELLS
+2   0810 -2.30E-10 -10 11 -12              IMP:N,P=1   $Concrete
+3   0 -3 #(-10 11 -12)                     IMP:N,P=1   $SPACE
+4   0810 -2.30E-10 -4 #3 #2                IMP:N,P=1   $Concrete
+5   0810 -2.30E-10 -5 #4 #3 #2             IMP:N,P=1   $Concrete
+100 0  5                                   IMP:N,P=0   $OUTSIDE WORLD
+
+C SURFACES
+10 PX  5
+11 PX -5
+12 CX  5
+c
+3 SO 1000
+4 SO 1050
+5 SO 1500
+
+C MATERIALS
+C CONCRETE
+M0810 01001.70C 0.150000000 06000.70C 0.100000000 
+      08016.70C 0.550000000 14028.70C 0.100000000 20040.70C 0.100000000
+C PHYSICS CARDS
+MODE N P
+NPS 1E3
+sdef x=-5 y=0 z=0 vec 1 0 0 dir=1  par=n erg=250
+c
+PRDMP  2J  -1
+phys:n 300
+c phys:h 300
+phys:p 300 3j 1
+ssw 5 4

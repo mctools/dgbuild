@@ -1,0 +1,7 @@
+package(USEPKG MCNP)
+
+#############################################################
+
+MCPL-MCNP support tests.
+
+primary author: thomas.kittelmann@ess.eu

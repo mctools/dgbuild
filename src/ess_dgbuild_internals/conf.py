@@ -94,11 +94,12 @@ def projects_dir():
 def extra_pkg_path():
     return envcfg.var.extra_pkg_path_list
 
-def framework_dir():
-    return (AbsPath(__file__).parent / 'data' / 'pkgs' / 'Framework')
+#NEVERUSE # DGBUILD-EXPORT-ONLY>>def framework_dir():
+#NEVERUSE # DGBUILD-EXPORT-ONLY>>    return (AbsPath(__file__).parent / 'data' / 'pkgs' / 'Framework')
 
 def pkg_search_path():
-    candidates = [framework_dir(), projects_dir()]
+    #candidates = [framework_dir(), projects_dir()]
+    candidates = [projects_dir()]
     candidates.extend(extra_pkg_path())
     dirs = []
     for d in candidates:

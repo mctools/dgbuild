@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+#A bit hackish, but we basically want to compile mcpl without zlib support:
+
+CC=`python -c 'import os;import pickle;import dgbuild.cfg as cfg;print(pickle.load(open(cfg.dirs.envcache,"rb"))["system"]["volatile"]["c"]["compiler"])'`
+if [ $? != 0 ]; then
+    exit 1
+fi
+P=$DGCODE_DIR/packages/Framework/MCPL/MCPL
+$CC $P/libsrc/mcpl.c -std=c99 -DMCPL_HEADER_INCPATH='"MCPL/mcpl.h"' -I$ESS_INCLUDE_DIR $P/app_tool/main.c -lm -o mcpl_tool_nogz && \
+MCPLTESTS_TESTTOOL=./mcpl_tool_nogz ess_mcpltestsfmt2_testtool

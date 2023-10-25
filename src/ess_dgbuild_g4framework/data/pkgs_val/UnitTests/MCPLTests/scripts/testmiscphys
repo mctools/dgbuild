@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+ess_mcpltests_miscphys mp.mcpl && \
+ess_mcpl_tool -l0 mp.mcpl && \
+ess_mcpl_tool -l0 $ESS_DATA_DIR/MCPLTests/miscphys.mcpl.gz

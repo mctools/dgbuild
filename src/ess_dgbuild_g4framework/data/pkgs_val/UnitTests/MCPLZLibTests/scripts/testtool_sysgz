@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -u
+set -e
+#A bit hackish, but we basically want to compile mcpl with system zlib:
+ENVDICT="import pickle;import dgbuild.cfg as cfg;d=pickle.load(open(cfg.dirs.envcache,'rb'))"
+CC=`python -c "$ENVDICT;print(d['system']['volatile']['c']['compiler'])"`
+if [ $? != 0 ]; then
+    exit 1
+fi
+CFLAGS=`python -c "$ENVDICT;print(d['extdeps']['ZLib']['cflags_c'])"`
+if [ $? != 0 ]; then
+    exit 1
+fi
+LDFLAGS=`python -c "$ENVDICT;print(d['extdeps']['ZLib']['ldflags'])"`
+if [ $? != 0 ]; then
+    exit 1
+fi
+P=$DGCODE_DIR/packages/Framework/MCPL/MCPL
+#cat $P/libsrc/mcpl.c|sed 's#MiniZLib/zlib.h#zlib.h#' > mcpl.c
+cp $P/libsrc/mcpl.c .
+cat $P/app_tool/main.c|sed 's#MCPL/mcpl.h#mcpl.h#' > main.c
+#NB: link flags comes *after*, other flags *before* object to compile...:
+$CC -std=c99 -I$ESS_INCLUDE_DIR/MCPL $CFLAGS  -DMCPL_HASZLIB mcpl.c main.c -lm $LDFLAGS -o mcpl_tool_sysgz && \
+MCPLTESTS_TESTTOOL=./mcpl_tool_sysgz MCPLTESTS_SKIPTRUNCGZ=1 ess_mcpltests_testtool

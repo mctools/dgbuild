@@ -1,0 +1,129 @@
+[ P a r a m e t e r s ]
+ icntl    =           0     # (D=0) 3:ECH 5:NOR 6:SRC 7,8:GSH 11:DSH 12:DUMP
+ maxcas   =        200     # (D=10) number of particles per one batch
+ maxbch   =           1     # (D=10) number of batches
+ ipnint   =           1     # (D=0) photonuclear GDR, 1:analog, -1:implicit itall
+c file(1)  = c:/phits        # (D=c:/phits) PHITS install folder name
+ file(7) = /home/douglasdijulio/PHITS300B/phits/data/xsdir_HE.jnd
+ file(6)  = phits.out       # (D=phits.out) general output file name
+
+[ S o u r c e ] 
+   s-type =   1             # mono-energetic axial source
+     proj =   pion+    # kind of incident nucleus
+       e0 =   200.000       # energy of beam [MeV/u]
+       r0 =   0.01          # radius [cm]
+       x0 =   0.0000        # (D=0.0) center position of x-axis [cm]
+       y0 =   0.0000        # (D=0.0) center position of y-axis [cm]
+       z0 =  -20.000        # minimum position of z-axis [cm]
+       z1 =  -20.000        # maximum position of z-axis [cm]
+      dir =   1.0000        # z-direction of beam [cosine]
+
+[ S o u r c e ] off
+   s-type =  17
+    file = dump_dmp
+    dump = -10
+    1 2 3 4 5 6 7 8 9 10
+      
+[ M a t e r i a l ]
+
+$ Air D = 1.21e-3 g/cm3
+MAT[1]  1H   7.199E-09
+        12C  7.585E-09
+        14N  3.910E-05
+        16O  1.054E-05
+
+$ Tungsten D = 19.25 g/cm3
+MAT[2]  W  1.0
+
+$ Concrete D = 2.2 g/cm3
+MAT[3]  1H    1.3407e-2
+        12C   1.1030e-3
+        16O   4.3887e-2
+        27Al  1.7971e-3
+        28Si  1.6123e-2
+        40Ca  1.8940e-3
+        56Fe  3.3448e-4
+
+$ Iron D = 7.7 g/cm3
+MAT[4]  Fe  1.0
+
+[ M a t N a m e C o l o r]
+mat    name      size      color
+1      Air       1.0       white
+2      Tungsten  0.5       green
+3      Conc.     0.5       camel
+4      Iron      0.5       gray
+
+[ C e l l ]
+999   -1             -998:999:900      $ Outer region
+100    0    998    -1  -900 #20   $ Front Air
+200    0     11  -999  -900   $ Behind Air
+  1    0      1    -2  -900   $ Wall 1
+  2    0      2    -3  -900   $ Wall 2
+  3    0      3    -4  -900   $ Wall 3
+  4    0      4    -5  -900   $ Wall 4
+  5    0      5    -6  -900   $ Wall 5
+  6    0      6    -7  -900   $ Wall 6
+  7    0      7    -8  -900   $ Wall 7
+  8    0      8    -9  -900   $ Wall 8
+  9    0      9   -10  -900   $ Wall 9
+ 10    0     10   -11  -900   $ Wall 10
+ 20    2 -19.25       21 -22 -23       $ Tungsten target
+c 20    0       21 -22 -23       $ Tungsten target
+
+[ S u r f a c e ]
+ 998    pz   -50.0 
+ 999    pz   200.0
+ 900    cz    50.0
+ 1      pz     0.0
+ 2      pz    10.0
+ 3      pz    20.0
+ 4      pz    30.0
+ 5      pz    40.0
+ 6      pz    50.0
+ 7      pz    60.0
+ 8      pz    70.0
+ 9      pz    80.0
+ 10     pz    90.0
+ 11     pz   100.0
+ 21     pz   -10.0
+ 22     pz    -5.0
+ 23     cz     5.0
+
+[ T - T r a c k ]
+    title = Track in xyz mesh
+     mesh =  xyz            # mesh type is xyz scoring mesh
+   x-type =    2            # x-mesh is linear given by xmin, xmax and nx
+     xmin =  -50            # minimum value of x-mesh points
+     xmax =   50            # maximum value of x-mesh points
+       nx =   40            # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  -50            # minimum value of y-mesh points
+     ymax =   50            # maximum value of y-mesh points
+       ny =    1            # number of y-mesh points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin = -30.0           # minimum value of z-mesh points
+     zmax = 120.0           # maximum value of z-mesh points
+       nz =   60            # number of z-mesh points
+  2D-type =    3            # 1:Cont, 2:Clust, 3:Color, 4:xyz, 5:mat, 6:Clust+Cont, 7:Col+Cont
+     axis =   xz            # axis of output
+     file = trackXZ.out     # file name of output for the above axis
+     part = proton neutron photon
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     unit =    1            # unit is [1/cm^2/source]
+   epsout =    1            # (D=0) generate eps file by ANGEL   
+    gshow =    3            # 0: no 1:bnd, 2:bnd+mat, 3:bnd+reg 4:bnd+lat
+
+[ t-cross ]  
+   part = all
+   mesh = reg
+   reg = 1
+   r-from r-to area
+    1      2   1.0
+   dump = 10
+   1 2 3 4 5 6 7 8 9 10 
+   file = dump
+
+[END]
