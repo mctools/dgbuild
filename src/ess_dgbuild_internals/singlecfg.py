@@ -8,6 +8,91 @@ from . import error
 
 _OptPath = typing.Union[pathlib.Path, None]# "pathlib.Path | None" needs py3.10+
 
+class TOMLSchemaDecodeContext(typing.Protocol):
+    @property
+    def src_descr(self) -> str:
+        return ''
+    @property
+    def default_dir(self) -> _OptPath:
+        return None
+    @property
+    def item_name(self) -> str:
+        return ''
+
+def decode_list_of_search_paths( ctx : TOMLSchemaDecodeContext, item ):
+    if not isinstance( item, list ):
+        error.error(f'Invalid value "{item}" for item {ctx.item_name} (expected list) in {ctx.src_descr}')
+    res=[]
+    for i,k in enumerate(item):
+        if not isinstance(k,str) or not k:
+            error.error(f'Invalid value of list entry #{i+1} in item {ctx.item_name} (expected non-empty string) in {ctx.src_descr}')
+        p = pathlib.Path(k).expanduser()
+        if not p.is_absolute():
+            if ctx.default_dir is None:
+                error.error(f'Invalid option "{item}" for item {ctx.item_name} (relative paths can only'
+                            f' be used in a context where the "root" dir is apparent) in {ctx.src_descr}')
+            p = ctx.default_dir / p
+        if not p.exists():
+            error.error(f'Non-existing path "{p}" in list entry #{i+1} in item {ctx.item_name} in {ctx.src_descr}')
+        if p.is_file():
+            p_redirect = p if p.name=='dgbuild_redirect.cfg' else None
+            p_std = p if p_redirect is None else None
+        if p.is_dir():
+            #Unless the filename is specified directly, add the default name:
+            p_std = ( p / 'dgbuild.cfg' )
+            p_redirect = ( p / 'dgbuild_redirect.cfg' )
+            p_std = None if not p_std.exists() else p_std
+            p_redirect = None if not p_redirect.exists() else p_redirect
+        if p_std is None and p_redirect is None:
+            error.error(f'Missing file "{p}" in list entry #{i+1} in item {ctx.item_name} in {ctx.src_descr}')
+        if p_std is not None and p_redirect is not None:
+            error.error('Both dgbuild.cfg and dgbuild_redirect.cfg file exists in search_path directory'
+                        f' "{p}" in list entry #{i+1} in item {ctx.item_name} in {ctx.src_descr} (specify'
+                        ' the full path to one of the files to specify which one you are interested in using.')
+        if p_std is not None:
+            res.append(p_std.absolute().resolve())
+        else:
+            assert p_redirect is not None
+            #Ok, load redirection file and expand:
+            rd = RedirectionCfg( p_redirect )
+            for e in rd.search_path:
+                res.append( e )
+
+    return tuple(res)
+
+class DecodeContext:
+    def __init__(self, srcdescr, default_dir):
+        self.__srcdescr : str = srcdescr
+        self.__item_name : str = ''
+        self.__default_dir : str = default_dir
+    def set_item_name( self, n ):
+        self.__item_name = n
+    @property
+    def src_descr(self) -> str:
+        return self.__srcdescr
+    @property
+    def default_dir(self) -> _OptPath:
+        return self.__default_dir
+    @property
+    def item_name(self) -> str:
+        assert self.__item_name
+        return self.__item_name
+
+class RedirectionCfg:
+    def __init__( self, path : pathlib.Path ):
+        try:
+            textdata = path.read_text()
+        except UnicodeDecodeError:
+            error.error(f'Not a text-file: {path}')
+        cfgdict = decode_toml_textdata_to_dict( textdata, path )
+        if list(cfgdict.keys())!= ['special'] or list(cfgdict['special'].keys())!= ['redirect_search_path']:
+            error.error(f'Invalid format of redirection cfg file at {path}')
+        self.__sp = decode_list_of_search_paths( DecodeContext( str(path), path.parent ),
+                                             cfgdict['special']['redirect_search_path'] )
+    @property
+    def search_path( self ):
+        return self.__sp
+
 class SingleCfg:
 
     """Class which contains decoded configuration from a single source (a
@@ -140,17 +225,6 @@ def import_tomllib():
         _cache_tomllib[0] = tomllib
     return _cache_tomllib[0]
 
-class TOMLSchemaDecodeContext(typing.Protocol):
-    @property
-    def src_descr(self) -> str:
-        return ''
-    @property
-    def default_dir(self) -> _OptPath:
-        return None
-    @property
-    def item_name(self) -> str:
-        return ''
-
 _reexp_valid_identifier = r'^[A-Za-z][A-Za-z0-9_]*$'
 _reobj_valid_identifier = re.compile(_reexp_valid_identifier)
 def _is_valid_identifier( s ):
@@ -166,6 +240,11 @@ def _generate_toml_schema():
     def decode_valid_identifier_string( ctx : TOMLSchemaDecodeContext, item ):
         if not _is_valid_identifier(item):
             error.error(f'Invalid value "{item}" for item {ctx.item_name} (expected string matching {_reexp_valid_identifier}) in {ctx.src_descr}')
+        return item
+
+    def decode_is_bool( ctx : TOMLSchemaDecodeContext, item ):
+        if not isinstance( item, bool ):
+            error.error(f'Invalid value "{item}" for item {ctx.item_name} (expected boolean "true" or "false") in {ctx.src_descr}')
         return item
 
     def decode_is_list_of_valid_identifier_string( ctx : TOMLSchemaDecodeContext, item ):
@@ -198,29 +277,6 @@ def _generate_toml_schema():
                 error.error(f'Invalid value of list entry #{i+1} in item {ctx.item_name} (expected non-empty string) in {ctx.src_descr}')
         return tuple(item)
 
-    def decode_is_list_of_paths( ctx : TOMLSchemaDecodeContext, item ):
-        if not isinstance( item, list ):
-            error.error(f'Invalid value "{item}" for item {ctx.item_name} (expected list) in {ctx.src_descr}')
-        res=[]
-        for i,k in enumerate(item):
-            if not isinstance(k,str) or not k:
-                error.error(f'Invalid value of list entry #{i+1} in item {ctx.item_name} (expected non-empty string) in {ctx.src_descr}')
-            p = pathlib.Path(k).expanduser()
-            if not p.is_absolute():
-                if ctx.default_dir is None:
-                    error.error(f'Invalid option "{item}" for item {ctx.item_name} (relative paths can only'
-                                f' be used in a context where the "root" dir is apparent) in {ctx.src_descr}')
-                p = ctx.default_dir / p
-            if not p.exists():
-                error.error(f'Non-existing path "{p}" in list entry #{i+1} in item {ctx.item_name} in {ctx.src_descr}')
-            if p.is_dir():
-                #Unless the filename is specified directly, add the default name:
-                p = ( p / 'dgbuild.cfg' )
-                if not p.exists():
-                    error.error(f'Missing file "{p}" in list entry #{i+1} in item {ctx.item_name} in {ctx.src_descr}')
-            res.append(p.absolute().resolve())
-        return tuple(res)
-
     def decode_str_enum( ctx : TOMLSchemaDecodeContext, item, optionlist ):
         item = decode_nonempty_str( ctx, item )
         if item not in optionlist:
@@ -251,8 +307,8 @@ def _generate_toml_schema():
                                    pkg_root      = (decode_dir, '.'),
                                    env_paths   = (decode_is_env_paths,[]),
                                   ),
-                 depend     = dict( projects     = (decode_is_list_of_nonempty_str,[]),
-                                    search_path = (decode_is_list_of_paths,[])
+                 depend    = dict( projects     = (decode_is_list_of_nonempty_str,[]),
+                                   search_path = (decode_list_of_search_paths,[])
                                   ),
                  build     = dict( mode = ( lambda a,b : decode_str_enum(a,b,('debug','release')), 'release' ),
                                    njobs = (decode_nonneg_int, 0),
@@ -324,24 +380,6 @@ def decode_toml_textdata_to_dict( textdata : str, path = None ):
 def decode_with_schema_and_apply_result_to_obj( cfg : dict, targetobj : SingleCfg, defaultdir, cfg_file : pathlib.Path, ignore_build : bool ):
     schema = get_toml_schema()
 
-    class DecodeContext:
-        def __init__(self, srcdescr, default_dir):
-            self.__srcdescr : str = srcdescr
-            self.__item_name : str = ''
-            self.__default_dir : str = default_dir
-        def set_item_name( self, n ):
-            self.__item_name = n
-        @property
-        def src_descr(self) -> str:
-            return self.__srcdescr
-        @property
-        def default_dir(self) -> _OptPath:
-            return self.__default_dir
-        @property
-        def item_name(self) -> str:
-            assert self.__item_name
-            return self.__item_name
-
     ctx = DecodeContext( str(cfg_file), defaultdir )
 
     #Validate+decode+apply values:
@@ -374,5 +412,6 @@ def decode_with_schema_and_apply_result_to_obj( cfg : dict, targetobj : SingleCf
                 setattr( targetobj,attrname, v )
 
     setattr(targetobj, '_cfg_file', cfg_file )
+
 
     return cfg
