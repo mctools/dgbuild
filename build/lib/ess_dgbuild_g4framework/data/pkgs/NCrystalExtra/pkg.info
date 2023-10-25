@@ -1,7 +1,0 @@
-package()
-
-#################################################################################################
-
-Extra NCrystal related stuff for dgcode projects only.
-
-primary author: Thomas.Kittelmann@ess.eu

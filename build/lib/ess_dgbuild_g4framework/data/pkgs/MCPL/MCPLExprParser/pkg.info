@@ -1,7 +1,0 @@
-package(USEPKG MCPL ExprParser)
-
-##########################################################
-
-MCPL-related expression parsing utilities.
-
-Primary author: thomas.kittelmann@ess.eu

@@ -1,7 +1,0 @@
-package(USEPKG SimpleHists USEEXT ROOT)
-
-######################################################################
-
-Utilities for converting between SimpleHists and ROOT histograms.
-
-primary author: thomas.kittelmann@ess.eu
