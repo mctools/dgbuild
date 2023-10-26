@@ -14,7 +14,7 @@ dependencies:
   - pip # in case we need to install dgbuild itself via pip
 # Developer tools:
 #  - git
-#  - gdb
+#  - gdb # not on OSX, here it is simpler to use lldb.
 #  - valgrind
 
 # For g4framework (includes openscenegraph to test G4OSG compilation):
@@ -35,36 +35,11 @@ dependencies:
 #  - spglib
 #  - pip
 
-#Only temporarily needed:
-#variables:
-#  DGCODE_BOOTSTRAP_SKIP_DGDEPFIXER_CHECK: 1
-#  DGCODE_USESYSNCRYSTAL: ALWAYS
-
 #TODO: Cleanup the stuff below:
 
 #  - pip:
 #    - ptpython==3.0.23
 #  DGCODE_FORCEVAR_CC: clang
 #  DGCODE_FORCEVAR_CXX: clang++
-#  URL_DGCODE: git@github.com:mctools/dgcode.git
-#  URL_DGCODE_VAL: git@github.com:mctools/dgcode_val.git
-#  URL_DGCODE_DG_PROJECTS: git@github.com:ess-dg/dgcode_projects.git
-#  URL_DGCODE_DG_PRIVATE_PROJECTS: git@github.com:mctools/dgcode_private_projects.git
 ##
-##name: dgcode
-##channels:
-##  - nodefaults
-##  - conda-forge
-##dependencies:
-##  - python
-##  - cmake
-##  - compilers
-##  - geant4
-##  - expat
-##variables:
-##  - DGCODE_BOOTSTRAP_SKIP_DGDEPFIXER_CHECK: 1
-##
-
-#ase pymatgen matplotlib gemmi spglib numpy scipy
-#
 #unsolved: root, garfield, mantidpython
