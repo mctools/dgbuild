@@ -339,8 +339,6 @@ def perform_configuration(cmakeargs=[],
     #Save new state:
     db.save_to_file()
 
-
-#NOCOMMIT: check usage of dgbuild.dirs.fmwkdir everywhere
     dir_names = ('projdir','pkgsearchpath','blddir','installdir','testdir','envcache')
     dirdict = dict(((d, getattr(dirs, d)) for d in dir_names))
 

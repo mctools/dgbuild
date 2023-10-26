@@ -46,10 +46,10 @@ class CfgBuilder:
 
     """
 
-    def __init__(self, master_cfg : SingleCfg, master_cfg_file, verbose = True ):#NOCOMMIT verbose=False
+    def __init__(self, master_cfg : SingleCfg, master_cfg_file, verbose = True ):#fixme verbose=False
         #Input:
         #Take build settings straight from master_cfg:
-        self.__print_verbose = lambda *a,**kw: print('dgbuild cfgbuilder INFO:',*a,**kw) if verbose else ( lambda *a,**kw: None )
+        self.__print_verbose = lambda *a,**kw: print('dgbuild cfgbuilder INFO::',*a,**kw) if verbose else ( lambda *a,**kw: None )
         self.__build_mode = master_cfg.build_mode
         self.__build_njobs = master_cfg.build_njobs
         self.__build_cachedir = master_cfg.build_cachedir
@@ -59,10 +59,8 @@ class CfgBuilder:
         #Build up everything else recursively, starting from the master_cfg:
         self.__pkg_path = []#result 1
         self.__env_paths = {}#result 2
-        #self.__cfg_search_path_already_considered = set()
         self.__used_cfg_files = set()#make sure we don't consider the same cfg-file twice
         self.__used_cfg_files.add( master_cfg_file )
-        #self.__print_verbose(f'Using master-cfg: {master_cfg_file}')
         self.__available_unused_cfgs = []#only needed during build up
         self.__cfg_names_used = set()
         self.__cfg_names_missing = set([ master_cfg.project_name ])
@@ -90,7 +88,6 @@ class CfgBuilder:
             _s = 's' if len(self.__cfg_names_missing)>2 else ''
             error.error('Could not find dependent project%s: "%s"'%(_s,_p))
         self.__pkg_path = tuple( self.__pkg_path )
-        #self.__env_paths = tuple( self.__env_paths )
         del self.__available_unused_cfgs
 
     @property
@@ -124,9 +121,6 @@ class CfgBuilder:
     def __use_cfg( self, cfg : SingleCfg, is_top_level = False ):
         assert cfg.project_name in self.__cfg_names_missing
         self.__print_verbose(f'Using {"master-" if is_top_level else ""}cfg from {cfg._cfg_file}')
-#        if not cfg.project_name in self.__cfg_names_missing:
-#            #We do not actually need this cfg!
-#            return
         self.__cfg_names_missing.remove( cfg.project_name )
         self.__cfg_names_used.add( cfg.project_name )
         #Add dependencies and cfgs available in search paths:
@@ -136,10 +130,7 @@ class CfgBuilder:
         for sp in cfg.depend_search_path:
             if not sp.exists():
                 error.error
-            #if sp in self.__cfg_search_path_already_considered:
-            #    continue
             assert sp.is_file()
-            #self.__cfg_search_path_already_considered.add( sp )
             sp = sp.absolute()
             if sp in self.__used_cfg_files:
                 continue
@@ -148,7 +139,6 @@ class CfgBuilder:
                 sp,
                 ignore_build = not is_top_level
             )
-            #self.__print_verbose(f'Found cfg: {sp}')
             self.__available_unused_cfgs.append( depcfg )
 
         #Add actual pkg-dirs and env-path requests from cfg:

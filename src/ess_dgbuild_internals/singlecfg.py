@@ -98,14 +98,6 @@ class SingleCfg:
     """Class which contains decoded configuration from a single source (a
     dgbuild.cfg file, a python module, etc.)."""
 
-#    @classmethod
-#    def create_from_toml_data( cls, data : str, srcdescr = None, default_dir =  None, ignore_build : bool = False ):
-#        cfgdict = decode_toml_textdata_to_dict( data )
-#        return cls.__create_from_cfgdict( cfgdict,
-#                                          srcdescr = srcdescr or 'TOML data',
-#                                          default_dir = default_dir,
-#                                          ignore_build = ignore_build )
-#
     @classmethod
     def create_from_toml_file( cls, path : pathlib.Path, ignore_build : bool = False ):
         try:
@@ -114,69 +106,6 @@ class SingleCfg:
             error.error(f'Not a text-file: {path}')
         cfgdict = decode_toml_textdata_to_dict( textdata, path )
         return cls.__create_from_cfgdict( cfgdict, str(path), path.parent, ignore_build = ignore_build )
-
-    #@classmethod
-    #def is_plugin_object( cls, obj ):
-    #     return hasattr( obj, 'dgbuild_bundle_list' )
-
-    ###@classmethod
-    ###def create_from_object_methods( cls, obj,
-    ###                                srcdescr = None,
-    ###                                default_dir : _OptPath = None,
-    ###                                ignore_build : bool = False ):
-    ###    if hasattr(obj, 'dgbuild_default_dir'):
-    ###        p=pathlib.Path( obj.dgbuild_default_dir() ).expanduser()
-    ###        if p.is_dir():
-    ###            default_dir = p
-    ###
-    ###    if default_dir is None and hasattr(obj, '__file__'):
-    ###        p=pathlib.Path(obj.__file__).parent
-    ###        if p.is_dir():
-    ###            default_dir = p
-    ###
-    ###    if srcdescr is None:
-    ###        if hasattr( obj, 'dgbuild_srcdescr_override' ):
-    ###            srcdescr = obj.dgbuild_srcdescr_override()
-    ###        elif hasattr(obj,'__name__'):
-    ###            if isinstance(obj,types.ModuleType):
-    ###                srcdescr = f'Python module {obj.__name__}'
-    ###            else:
-    ###                srcdescr = f'Python object ({obj.__name__})'
-    ###        else:
-    ###                srcdescr = 'anonymous Python object'
-    ###
-    ###    if hasattr( obj, 'dgbuild_bundle_toml_cfg' ):
-    ###        tomldata = obj.dgbuild_bundle_toml_cfg()
-    ###        return cls.create_from_toml_data( tomldata,
-    ###                                          srcdescr = srcdescr,
-    ###                                          default_dir = default_dir,
-    ###                                          ignore_build = ignore_build )
-    ###
-    ###    if not hasattr( obj, 'dgbuild_bundle_pkgroot' ):
-    ###        error.error(f'dgbuild Python plugin ({srcdescr}) is missing an dgbuild_bundle_pkgroot function')
-    ###    pkg_root = obj.dgbuild_bundle_pkgroot()
-    ###    if not isinstance(pkg_root,pathlib.Path) and not isinstance(pkg_root,str):
-    ###        error.error(f'dgbuild Python plugin ({srcdescr}) got invalid type from dgbuild_bundle_pkgroot'
-    ###                    ' function (must be str or pathlib.Path object)')
-    ###
-    ###    env_paths_fct = getattr( obj, 'dgbuild_bundle_envpaths', None )
-    ###    if env_paths_fct:
-    ###        env_paths = env_paths_fct()
-    ###        if not isinstance( env_paths, list ) or not all( isinstance(e,str) for e in env_paths ):
-    ###            error.error(f'dgbuild Python plugin ({srcdescr}) got invalid type'
-    ###                        ' from dgbuild_bundle_envpaths function (must be list of str objects)')
-    ###    cfgdict = dict( project = dict( name = obj.dgbuild_bundle_name(),
-    ###                                    pkg_root = pkg_root,
-    ###                                    env_paths = env_paths,
-    ###                                    #extdeps = ( obj.dgbuild_bundle_extdeps()
-    ###                                    #            if hasattr(obj,'dgbuild_bundle_extdeps')
-    ###                                    #            else None ),
-    ###                                   )
-    ###                    )
-    ###    return cls.__create_from_cfgdict( cfgdict,
-    ###                                      srcdescr = srcdescr,
-    ###                                      default_dir = default_dir,
-    ###                                      ignore_build = ignore_build)
 
     @classmethod
     def __create_from_cfgdict( cls, cfgdict : dict, cfg_file : pathlib.Path, default_dir = None, ignore_build : bool = False ):
@@ -344,27 +273,6 @@ def read_text_file( f ):
     except UnicodeDecodeError:
         error.error(f'Not a text-file: {f}')
     return data
-
-#def _process_cfg(infile,cfg,target):
-#    for section, sectiondata in cfg.items():
-#        schemadata = _schema.get(section)
-#        if not schemadata:
-#            error.warn(f'Ignoring unknown dgbuild.cfg section "{section}".')
-#            continue
-#        for k,v in sectiondata.items():
-#            _ = schemadata.get(k)
-#            if _ is None:
-#                error.warn(f'Ignoring unknown dgbuild.cfg entry name "{k}" in section "{section}".')
-#                continue
-#            decodefct, defval = _
-#            setattr(target, f'{section}_{k}', decodefct(infile,f'{section}.{k}',v))
-#    for sectionname, sectiondata in _schema.items():
-#        for k,(decodefct,defval) in sectiondata.items():
-#            attrname=f'{sectionname}_{k}'
-#            if not hasattr(target,attrname):
-#                v = None if defval is None else decodefct(infile,f'{sectionname}.{k}',defval)
-#                setattr(target,attrname,v)
-#
 
 def decode_toml_textdata_to_dict( textdata : str, path = None ):
     tomllib = import_tomllib()
