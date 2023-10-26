@@ -8,8 +8,8 @@
 #include "G4Materials/ShieldingMaterials.hh"
 #include "G4NCrystalRel/G4NCrystal.hh"
 #include "NCrystalRel/NCrystal.hh"
-#include "NCrystalRel/internal_NCCfgTypes.hh"
-#include "NCrystalRel/internal_NCMath.hh"
+#include "NCrystal/internal/NCCfgTypes.hh"
+#include "NCrystal/internal/NCMath.hh"
 #include "IdealGasBuilder/IdealGasBuilder.hh"
 #include "G4Units/Units.hh"
 #include "G4Units/Constants.hh"
@@ -22,7 +22,7 @@
 #include <sstream>
 #include <stdexcept>
 
-namespace NC = NCrystalRel;
+namespace NC = NCrystal;
 namespace G4NC = G4NCrystalRel;
 
 namespace NamedMaterialProvider {

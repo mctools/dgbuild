@@ -1,7 +1,8 @@
 #ifndef RandUtils_Rand_hh
 #define RandUtils_Rand_hh
 
-#include "NCrystalRel/internal_NCRandUtils.hh"
+#include "CLHEP/Random/RandomEngine.h"
+#include "NCrystal/internal/NCRandUtils.hh"
 
 namespace RandUtils {
 
@@ -16,7 +17,7 @@ namespace RandUtils {
     bool coinflip() { return m_rng.coinflip(); }
 
   private:
-    NCrystalRel::RandXRSRImpl m_rng;
+    NC::RandXRSRImpl m_rng;
   };
 
 }

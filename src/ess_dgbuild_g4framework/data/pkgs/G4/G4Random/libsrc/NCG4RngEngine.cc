@@ -1,5 +1,7 @@
 #include "NCG4RngEngine.hh"
-#include "NCrystalRel/internal_NCString.hh"
+
+#include "NCrystal/internal/NCString.hh"
+
 
 NCG4RngEngine::~NCG4RngEngine() = default;
 
