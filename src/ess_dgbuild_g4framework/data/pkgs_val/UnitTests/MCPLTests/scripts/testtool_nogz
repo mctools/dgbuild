@@ -5,6 +5,6 @@ CC=`python -c 'import os,pickle;import dgbuild.cfg as cfg; print(pickle.load(ope
 if [ $? != 0 ]; then
     exit 1
 fi
-P=$DGCODE_DIR/packages/Framework/MCPL/MCPL
+P=$(python3 -c "import dgbuild.cfg as c; print(c.pkgs['MCPL']['dirname'])")
 $CC $P/libsrc/mcpl.c -std=c99 -DMCPL_HEADER_INCPATH='"MCPL/mcpl.h"' -I$ESS_INCLUDE_DIR $P/app_tool/main.c -lm -o mcpl_tool_nogz && \
 MCPLTESTS_TESTTOOL=./mcpl_tool_nogz ess_mcpltests_testtool

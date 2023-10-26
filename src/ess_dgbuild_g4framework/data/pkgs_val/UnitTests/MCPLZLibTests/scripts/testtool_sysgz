@@ -15,7 +15,7 @@ LDFLAGS=`python -c "$ENVDICT;print(d['extdeps']['ZLib']['ldflags'])"`
 if [ $? != 0 ]; then
     exit 1
 fi
-P=$DGCODE_DIR/packages/Framework/MCPL/MCPL
+P=$(python3 -c "import dgbuild.cfg as c; print(c.pkgs['MCPL']['dirname'])")
 #cat $P/libsrc/mcpl.c|sed 's#MiniZLib/zlib.h#zlib.h#' > mcpl.c
 cp $P/libsrc/mcpl.c .
 cat $P/app_tool/main.c|sed 's#MCPL/mcpl.h#mcpl.h#' > main.c

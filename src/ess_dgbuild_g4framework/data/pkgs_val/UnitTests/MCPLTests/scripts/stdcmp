@@ -15,7 +15,7 @@ CCXX=`python -c 'import os; import pickle; import dgbuild.cfg as cfg; print(pick
 if [ $? != 0 ]; then
     exit 1
 fi
-P=$DGCODE_DIR/packages/Framework/MCPL/MCPL
+P=$(python3 -c "import dgbuild.cfg as c; print(c.pkgs['MCPL']['dirname'])")
 
 #sliiiightly faster compilation with -O0:
 CC="$CC -O0"

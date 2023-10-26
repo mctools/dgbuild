@@ -1,7 +1,7 @@
 set(HAS_NCrystal 0)
 
 set(autoreconf_bin_NCrystal "ncrystal-config;nctool")
-set(autoreconf_env_NCrystal "NCRYSTALDIR;DGCODE_USESYSNCRYSTAL")
+set(autoreconf_env_NCrystal "NCRYSTALDIR")
 
 function(
     detect_system_ncrystal
