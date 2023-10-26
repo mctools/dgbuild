@@ -3,6 +3,9 @@
 \#*\#
 .\#*
 
+#build dir created by direct pip install:
+/build/
+
 #Also needed for vi:
 .*.sw?
 

@@ -11,7 +11,7 @@ dependencies:
   - pybind11
   - numpy #Since somewhat (?) tied to pybind11?
   - tomli #not actually needed for py3.11+
-
+  - pip # in case we need to install dgbuild itself via pip
 # Developer tools:
 #  - git
 #  - gdb
@@ -36,9 +36,9 @@ dependencies:
 #  - pip
 
 #Only temporarily needed:
-variables:
-  DGCODE_BOOTSTRAP_SKIP_DGDEPFIXER_CHECK: 1
-  DGCODE_USESYSNCRYSTAL: ALWAYS
+#variables:
+#  DGCODE_BOOTSTRAP_SKIP_DGDEPFIXER_CHECK: 1
+#  DGCODE_USESYSNCRYSTAL: ALWAYS
 
 #TODO: Cleanup the stuff below:
 

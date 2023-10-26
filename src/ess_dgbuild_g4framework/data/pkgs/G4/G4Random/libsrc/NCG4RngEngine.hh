@@ -6,6 +6,7 @@
 
 #include "CLHEP/Random/RandomEngine.h"
 #include "NCrystal/internal/NCRandUtils.hh"
+namespace NC = NCrystal;
 
 class NCG4RngEngine final : public CLHEP::HepRandomEngine  {
 public:

@@ -3,6 +3,7 @@
 
 #include "CLHEP/Random/RandomEngine.h"
 #include "NCrystal/internal/NCRandUtils.hh"
+namespace NC = NCrystal;
 
 namespace RandUtils {
 
